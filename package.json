@@ -29,5 +29,8 @@
   "devDependencies": {
     "request": "^2.44.0",
     "tape": "^3.0.0"
+  },
+  "dependencies": {
+    "lodash.assign": "^2.4.1"
   }
 }

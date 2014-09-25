@@ -2,9 +2,16 @@ var HttpHealthCheck = require('../index');
 var request = require('request');
 var test = require('tape');
 
-test('Gets a response with Content-Type of application/json, code 200 and the expected contents', function (t) {
-  t.plan(7);
+test('Defaults are as expected', function (t) {
+  var health = new HttpHealthCheck({ port: 10060 }, function () {});
+  t.equal(health.options.port, 10060, 'Port should default to 10060');
+  t.equal(health.options.path, '/', 'Path should default to \'/\'');
+  t.equal(health.options.okField, 'ok', 'okField should default to \'ok\'');
+  t.equal(health.options.okValue, true, 'okValue should default to true');
+  t.end();
+});
 
+test('Gets a response with Content-Type of application/json, code 200 and the expected contents', function (t) {
   function healthCheckFn(cb) {
     process.nextTick(cb.bind(null, null, {
       ok: true,
@@ -26,14 +33,13 @@ test('Gets a response with Content-Type of application/json, code 200 and the ex
         t.ok(body.things, 'Body contains expected values');
         t.ok(body.no, 'Body contains expected values');
         health.close();
+        t.end();
       });
     }, 500);
   });
 });
 
 test('Gets a response with status code 503 when healthCheckFn contains ok=false', function (t) {
-  t.plan(5);
-
   function healthCheckFn(cb) {
     process.nextTick(cb.bind(null, null, {
       ok: false
@@ -51,6 +57,7 @@ test('Gets a response with status code 503 when healthCheckFn contains ok=false'
         t.notOk(body.ok, 'Body \'ok\' value is false');
         t.equal(res.statusCode, 503, 'Response status code should be 503');
         health.close();
+        t.end();
       });
     }, 500);
   });

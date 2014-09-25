@@ -1,11 +1,18 @@
 var http = require('http');
+var assign = require('lodash.assign');
 
 function HttpHealthCheck(options, healthCheckFn) {
   if (!(this instanceof HttpHealthCheck)) {
     return new HttpHealthCheck(options, healthCheckFn);
   }
 
-  this.options = options || {};
+  var defaults = {
+    port: 10060,
+    path: '/',
+    okField: 'ok',
+    okValue: true
+  };
+  this.options = assign(defaults, options || {});
   this.healthCheckFn = healthCheckFn;
   this.server = null;
 }
