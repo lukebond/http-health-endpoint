@@ -25,13 +25,18 @@ HttpHealthCheck.prototype.createServer = function (cb) {
         res.writeHead(500, {'Content-Type': 'text/plain'});
         res.end(err.message);
       } else {
-        res.writeHead(
-          healthResponse[self.options.okField] === self.options.okValue ? 200 : 503,
-          {'Content-Type': 'application/json'});
-        try {
-          res.end(JSON.stringify(healthResponse));
-        } catch (err) {
-          res.end('Invalid JSON in health check data');
+        if (req.url !== self.options.path) {
+          res.writeHead(404, {'Content-Type': 'text/plain'});
+          res.end('Not found. Did you specify the correct path?');
+        } else {
+          res.writeHead(
+            healthResponse[self.options.okField] === self.options.okValue ? 200 : 503,
+            {'Content-Type': 'application/json'});
+          try {
+            res.end(JSON.stringify(healthResponse));
+          } catch (err) {
+            res.end('Invalid JSON in health check data');
+          }
         }
       }
     });

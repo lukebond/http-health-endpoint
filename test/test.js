@@ -140,3 +140,41 @@ test('Gets a response with status code 503 when healthCheckFn contains healthy=f
     }, 500);
   });
 });
+
+test('Doesn\'t work if you override the path but make a request to the wrong path', function (t) {
+  function healthCheckFn(cb) {
+    process.nextTick(cb.bind(null, null, {
+      ok: true
+    }));
+  }
+  var health = new HttpHealthCheck({ path: '/' }, healthCheckFn);
+  health.createServer(function () {
+    setTimeout(function () {
+      request('http://localhost:10060/_health', function (err, res, body) {
+        t.error(err);
+        t.equal(res.statusCode, 404, 'Response status code should be 404');
+        health.close();
+        t.end();
+      });
+    }, 500);
+  });
+});
+
+test('Overriding the \'path\' option works', function (t) {
+  function healthCheckFn(cb) {
+    process.nextTick(cb.bind(null, null, {
+      ok: true
+    }));
+  }
+  var health = new HttpHealthCheck({ path: '/_health' }, healthCheckFn);
+  health.createServer(function () {
+    setTimeout(function () {
+      request('http://localhost:10060/_health', function (err, res, body) {
+        t.error(err);
+        t.equal(res.statusCode, 200, 'Response status code should be 200');
+        health.close();
+        t.end();
+      });
+    }, 500);
+  });
+});
