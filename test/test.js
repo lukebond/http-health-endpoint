@@ -3,11 +3,22 @@ var request = require('request');
 var test = require('tape');
 
 test('Defaults are as expected', function (t) {
-  var health = new HttpHealthCheck({ port: 10060 }, function () {});
+  var health = new HttpHealthCheck({}, function () {});
   t.equal(health.options.port, 10060, 'Port should default to 10060');
   t.equal(health.options.path, '/', 'Path should default to \'/\'');
   t.equal(health.options.okField, 'ok', 'okField should default to \'ok\'');
   t.equal(health.options.okValue, true, 'okValue should default to true');
+  t.end();
+});
+
+test('Defaults can be overriden', function (t) {
+  var health = new HttpHealthCheck(
+    { port: 10061, path: '/_health', okField: 'healthy', okValue: 1 },
+    function () {});
+  t.equal(health.options.port, 10061, 'Overriding default port works');
+  t.equal(health.options.path, '/_health', 'Overriding default path works');
+  t.equal(health.options.okField, 'healthy', 'Overriding default okField works');
+  t.equal(health.options.okValue, 1, 'Overriding default okValue works');
   t.end();
 });
 
