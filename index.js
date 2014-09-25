@@ -26,7 +26,7 @@ HttpHealthCheck.prototype.createServer = function (cb) {
         res.end(err.message);
       } else {
         res.writeHead(
-          healthResponse.ok ? 200 : 503,
+          healthResponse[self.options.okField] === self.options.okValue ? 200 : 503,
           {'Content-Type': 'application/json'});
         try {
           res.end(JSON.stringify(healthResponse));
