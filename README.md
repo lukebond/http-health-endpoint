@@ -46,4 +46,4 @@ The default options are as follows:
 Check out the tests for detailed usage.
 
 ## Licence
-MIT
+ISC
