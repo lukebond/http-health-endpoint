@@ -32,4 +32,18 @@ Transfer-Encoding: chunked
 
 If the health check function returns an object containing `ok: false` then it will result in a status code of 503.
 
-This is a first pass, more flexibility to come.
+The default options are as follows:
+```
+{
+  port: 10060,
+  path: '/',
+  okField: 'ok',
+  okValue: true
+};
+```
+...override them by passing them to the first argument of the constructor.
+
+Check out the tests for detailed usage.
+
+## Licence
+MIT
